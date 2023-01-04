@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BsQuestionSquare, BsDice1, BsDice2, BsDice3, BsDice4, BsDice5, BsDice6 } from 'react-icons/bs'
 import { MdReplay } from 'react-icons/md'
 import { HiShare } from 'react-icons/hi' 
@@ -6,6 +6,11 @@ import { FiHelpCircle } from 'react-icons/fi'
 import { AiFillCloseCircle } from 'react-icons/ai' 
 import { FaEthereum } from 'react-icons/fa'
 import Confetti from './Confetti';
+// Web3 Dependencies
+import { Contract, providers, utils } from "ethers";
+import Web3Modal from "web3modal";
+import { abi, NFT_CONTRACT_ADDRESS } from "../constants";
+
 
 function App() {
   // Dice Variables
@@ -24,7 +29,14 @@ function App() {
   // Modal State
   const [modal, setModal] = useState(false)
   const [web3Modal, setWeb3Modal] = useState(false)
+  const [walletConnected, setWalletConnected] = useState(false)
+  // Web3 State
+  const [web3Mode, setWeb3Mode] = useState(false)
+  // Web3ModalRef
+  const web3ModalRef = useRef();
 
+
+  // Game Functions
   const resetDice = () => {
     setDice1Value('?')
     setDice2Value('?')
@@ -163,21 +175,98 @@ function App() {
     setModal(!modal)
   }
 
+  // Web3 Functions
   const toggleWeb3Modal = () => {
     setWeb3Modal(!web3Modal)
   }
 
-  useEffect(() => {
-    if(!numberArr.length){
-      winGame()
+  const toggleWeb3Mode = () => {
+    web3Mode ? console.log('Web 3 mode dissabled') : console.log('Web 3 mode activated')
+    setWeb3Mode(!web3Mode)
+  }
+
+  //Returns a Provider or Signer object representing the Ethereum RPC with or without the signing capabilities of metamask attached
+  const getProviderOrSigner = async (needSigner = false) => {
+    // Connect to Metamask
+    // Since we store `web3Modal` as a reference, we need to access the `current` value to get access to the underlying object
+    const provider = await web3ModalRef.current.connect();
+    const web3Provider = new providers.Web3Provider(provider);
+
+    // If user is not connected to the Goerli network, let them know and throw an error
+    const { chainId } = await web3Provider.getNetwork();
+    if (chainId !== 5) {
+      window.alert("Change the network to Goerli");
+      throw new Error("Change network to Goerli");
     }
-  }, [numberArr])
+
+    if (needSigner) {
+      const signer = web3Provider.getSigner();
+      return signer;
+    }
+    return web3Provider;
+  };
+
+  // connectWallet: Connects the MetaMask wallet
+  const connectWallet = async () => {
+    try {
+      // Get the provider from web3Modal, which in our case is MetaMask
+      // When used for the first time, it prompts the user to connect their wallet
+      const signer = await getProviderOrSigner();
+      setWeb3Mode(true)
+      setWalletConnected(true);
+    } catch (err) {
+      console.error(err);
+      if(err) {
+        setWalletConnected(false);
+        setWeb3Mode(false);
+        console.log('Getting here?')
+      }
+    }
+  };
+
+  const publicMint = async () => {
+    try {
+      const signer = await getProviderOrSigner(true);
+      // Create a new instance of the Contract with a Signer, which allows update methods
+      const nftContract = new Contract(NFT_CONTRACT_ADDRESS, abi, signer);
+      // call the mint from the contract to mint the Proof of Persistence
+      const tx = await nftContract.mint({
+        value: utils.parseEther("0.00"),
+      });
+      setLoading(true);
+      // wait for the transaction to get mined
+      await tx.wait();
+      setLoading(false);
+      window.alert("You successfully minted a Crypto Dev!");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    web3ModalRef.current = new Web3Modal({
+      network: "goerli",
+      providerOptions: {},
+      disableInjectedProvider: false,
+    })
+    if(!numberArr.length){
+      winGame();
+    }
+    // if wallet is not connected, create a new instance of Web3Modal and connect the MetaMask wallet
+    if (!walletConnected && web3Mode) {
+      connectWallet();
+    }
+  }, [numberArr, walletConnected, web3Mode])
 
   return (
     <div className={`appContainer ${gameWon ? 'winBG' : ''} ${gameLost ? 'loseBG' : ''}`}>
       <div className={'subContainer'}>
         {gameWon ? <Confetti className={'confetti'}/> : ''}
-        <h1><FaEthereum className={'helpIcon'} onClick={toggleWeb3Modal}/> Jackpot <FiHelpCircle className={'helpIcon'} onClick={toggleModal}/></h1>
+        <h1>
+          <FiHelpCircle className={'helpIcon'} onClick={toggleModal}/>
+          Jackpot
+          <FaEthereum className={'helpIcon'} onClick={toggleWeb3Modal}/>
+        </h1>
         <div className={'diceContainer'}>
           {renderDice(dice1Value)}
           {renderDice(dice2Value)}
@@ -290,19 +379,24 @@ function App() {
                 onClick={toggleWeb3Modal}
                 />
                 <p></p>
-                <h3>Web3 Jackpot</h3>
+                <h3>Web 3 Jackpot</h3>
                 <p>
-                    Some writing I'll have to eventually write.
-                    About how the web3 mode lets you mint a cool NFT etc
+                    If enabled, Web 3 Jackpot allows you to mint an NFT to verify your completion of the game.
+                    If you would like to mint a 'Proof of Persistence' NFT to show off this acheivement then connect your wallet.
                 </p>
-                <h3>View your Proof of Persistence</h3>
+                <h3>How to turn on Web3 Mode</h3>
                 <p>
-                    probably say some things about opensea and give a link to the collection
+                  If this is your first time playing, toggle Web 3 mode on below and connect your MetaMask.
+                  If you have visited before, just ensure Web 3 mode is toggled on.
                 </p>
-                <h3>How You Win</h3>
+                <h3>Turn on Web 3 Mode</h3>
+                <label className="switch">
+                  <input onChange={toggleWeb3Mode} type="checkbox"></input>
+                  <span className="slider round"></span>
+                </label>
+                {/* { !walletConnected &&<button onClick={connectWallet} className={'walletConnectButton'}><FaEthereum className={'buttonIcons'}/>Connect Wallet</button>} */}
                 <p>
-                    The game is won when you knock down all of the numbers successfully.
-                    And I can say from personal experience... It is truly glorious!
+                    {walletConnected ? 'Wallet Connected' : 'Wallet Not Connected'}
                 </p>
             </div>
         </div>)}
