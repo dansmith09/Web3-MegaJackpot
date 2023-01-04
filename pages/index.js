@@ -17,7 +17,7 @@ function App() {
   const [dice1Value, setDice1Value] = useState('?');
   const [dice2Value, setDice2Value] = useState('?');
   // Number Variables
-  const [numberArr, setNumberArr] = useState([6])
+  const [numberArr, setNumberArr] = useState([6]) // for testing only
   // const [numberArr, setNumberArr] = useState([1,2,3,4,5,6,7,8,9,10,11,12])
   // Share Text Content
   const [text, setText] = useState('');
