@@ -17,7 +17,8 @@ function App() {
   const [dice1Value, setDice1Value] = useState('?');
   const [dice2Value, setDice2Value] = useState('?');
   // Number Variables
-  const [numberArr, setNumberArr] = useState([1,2,3,4,5,6,7,8,9,10,11,12])
+  const [numberArr, setNumberArr] = useState([6])
+  // const [numberArr, setNumberArr] = useState([1,2,3,4,5,6,7,8,9,10,11,12])
   // Share Text Content
   const [text, setText] = useState('');
   // Game State
@@ -29,9 +30,11 @@ function App() {
   // Modal State
   const [modal, setModal] = useState(false)
   const [web3Modal, setWeb3Modal] = useState(false)
-  const [walletConnected, setWalletConnected] = useState(false)
   // Web3 State
   const [web3Mode, setWeb3Mode] = useState(false)
+  const [walletConnected, setWalletConnected] = useState(false)
+  const [connectedAddress, setConnectedAddress] = useState('')
+  const [noMetaMaskAlert, setNoMetaMaskAlert] = useState('')
   // Web3ModalRef
   const web3ModalRef = useRef();
 
@@ -151,6 +154,9 @@ function App() {
     setGameWon(true)
     setGameInProgress(false)
     generateTextOutput()
+    if(web3Mode) {
+      publicMint()
+    }
   }
 
   const handleClipBoardMessage = () => {
@@ -180,9 +186,35 @@ function App() {
     setWeb3Modal(!web3Modal)
   }
 
-  const toggleWeb3Mode = () => {
+  const toggleWeb3Mode = (e) => {
     web3Mode ? console.log('Web 3 mode dissabled') : console.log('Web 3 mode activated')
-    setWeb3Mode(!web3Mode)
+    setWeb3Mode(e.target.checked)
+  }
+
+  const requestAccounts = async () => {
+    if(window.ethereum) {
+      try {
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts"
+        })
+        console.log(accounts[0])
+        formatAndSetAddress(accounts[0])
+      } catch (error) {
+        console.err(error)
+      }
+    } else {
+      setNoMetaMaskAlert(true)
+    }
+  }
+
+  const formatAndSetAddress = (addressString) => {
+    const Arr = addressString.split('')
+    const formattedArr = [
+      Arr[0],Arr[1],Arr[2],Arr[3],Arr[4], // First 5 digits
+      '.','.','.',
+      Arr[Arr.length-1], Arr[Arr.length-2], Arr[Arr.length-3], Arr[Arr.length-4] // Last 4
+    ]
+    setConnectedAddress(formattedArr.join(''))
   }
 
   //Returns a Provider or Signer object representing the Ethereum RPC with or without the signing capabilities of metamask attached
@@ -212,15 +244,11 @@ function App() {
       // Get the provider from web3Modal, which in our case is MetaMask
       // When used for the first time, it prompts the user to connect their wallet
       const signer = await getProviderOrSigner();
-      setWeb3Mode(true)
+      requestAccounts()
       setWalletConnected(true);
+      setWeb3Mode(true);
     } catch (err) {
       console.error(err);
-      if(err) {
-        setWalletConnected(false);
-        setWeb3Mode(false);
-        console.log('Getting here?')
-      }
     }
   };
 
@@ -237,7 +265,7 @@ function App() {
       // wait for the transaction to get mined
       await tx.wait();
       setLoading(false);
-      window.alert("You successfully minted a Crypto Dev!");
+      window.alert("You successfully minted a Proof of Persistence!");
     } catch (err) {
       console.error(err);
     }
@@ -256,6 +284,7 @@ function App() {
     if (!walletConnected && web3Mode) {
       connectWallet();
     }
+    
   }, [numberArr, walletConnected, web3Mode])
 
   return (
@@ -265,7 +294,7 @@ function App() {
         <h1>
           <FiHelpCircle className={'helpIcon'} onClick={toggleModal}/>
           Jackpot
-          <FaEthereum className={'helpIcon'} onClick={toggleWeb3Modal}/>
+          <FaEthereum className={walletConnected && web3Mode ? 'ethIcon ethIconWhenWalletConnected' :'ethIcon'} onClick={toggleWeb3Modal}/>
         </h1>
         <div className={'diceContainer'}>
           {renderDice(dice1Value)}
@@ -384,20 +413,22 @@ function App() {
                     If enabled, Web 3 Jackpot allows you to mint an NFT to verify your completion of the game.
                     If you would like to mint a 'Proof of Persistence' NFT to show off this acheivement then connect your wallet.
                 </p>
-                <h3>How to turn on Web3 Mode</h3>
-                <p>
-                  If this is your first time playing, toggle Web 3 mode on below and connect your MetaMask.
-                  If you have visited before, just ensure Web 3 mode is toggled on.
-                </p>
-                <h3>Turn on Web 3 Mode</h3>
+                {!web3Mode&& 
+                  <>
+                    <h3>How to turn on Web3 Mode</h3>
+                    <p>Click the 'Connect Wallet' button below to enable Web3 mode</p>
+                  </>}
+                <h3>Web 3 Mode {web3Mode ? 'On' : 'Off'}</h3>
                 <label className="switch">
-                  <input onChange={toggleWeb3Mode} type="checkbox"></input>
+                  <input checked={web3Mode} type="checkbox"></input>
                   <span className="slider round"></span>
                 </label>
-                {/* { !walletConnected &&<button onClick={connectWallet} className={'walletConnectButton'}><FaEthereum className={'buttonIcons'}/>Connect Wallet</button>} */}
-                <p>
-                    {walletConnected ? 'Wallet Connected' : 'Wallet Not Connected'}
-                </p>
+                {!walletConnected && <button onClick={connectWallet} className={'walletConnectButton'}><FaEthereum className={'buttonIcons'}/>Connect Wallet</button>}
+                {walletConnected &&
+                <>
+                <h3>{'Wallet Connected:'}</h3>
+                <p className='walletAddress'>{connectedAddress}</p>
+                </>}
             </div>
         </div>)}
       </div>

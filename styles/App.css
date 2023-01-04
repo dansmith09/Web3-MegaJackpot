@@ -104,6 +104,18 @@ h1{
 .helpIcon:hover {
   color: #21aed4;
 }
+.ethIcon {
+  transition: 0.3s;
+  color: #FFFFF0;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+.ethIcon:hover {
+  color: #21aed4;
+}
+.ethIconWhenWalletConnected {
+  color: #9198e5;
+}
 /* Modal Styling */
 .rulesModalContainer {
   display: flex;
@@ -171,8 +183,14 @@ h1{
   border: #63d7f7;
   font-size: 20px;
   transition: 0.4s;
-  color: black;
+  color: #2c2a2a;
+  cursor: pointer;
 }
+.walletConnectButton:hover {
+  background-color: #9198e5;
+  word-wrap: initial;
+}
+
 /* Switch Styling */
 .switch {
   position: relative;
@@ -191,7 +209,6 @@ h1{
 /* The slider */
 .slider {
   position: absolute;
-  cursor: pointer;
   top: 0;
   left: 0;
   right: 0;
@@ -214,11 +231,11 @@ h1{
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #9198e5;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #9198e5;
 }
 
 input:checked + .slider:before {

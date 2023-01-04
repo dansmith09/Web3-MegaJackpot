@@ -5,17 +5,17 @@ export default function handler(req, res) {
     let OGness = 'Standard';
     if(tokenId < 5) {
       OGness = 'First 5!'
-    } else if (OGness > 10) {
+    } else if (OGness < 10) {
       OGness = 'First 10!'
-    } else if (OGness > 20) {
+    } else if (OGness < 20) {
       OGness = 'First 20!'
-    } else if (OGness > 50) {
+    } else if (OGness < 50) {
       OGness = 'First 50!'
-    } else if (OGness > 100) {
+    } else if (OGness < 100) {
       OGness = 'First 100!'
-    } else if (OGness > 250) {
+    } else if (OGness < 250) {
       OGness = 'First 250!'
-    } else if (OGness > 1000) {
+    } else if (OGness < 1000) {
       OGness = 'First 1000!'
     }
 
