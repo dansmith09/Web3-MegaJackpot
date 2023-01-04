@@ -99,6 +99,7 @@ h1{
   transition: 0.3s;
   color: #FFFFF0;
   margin-left: 20px;
+  margin-right: 20px;
 }
 .helpIcon:hover {
   color: #21aed4;

@@ -4,6 +4,7 @@ import { MdReplay } from 'react-icons/md'
 import { HiShare } from 'react-icons/hi' 
 import { FiHelpCircle } from 'react-icons/fi' 
 import { AiFillCloseCircle } from 'react-icons/ai' 
+import { FaEthereum } from 'react-icons/fa'
 import Confetti from './Confetti';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
   const [clipBoardMessage, setClipBoardMessage] = useState(false)
   // Modal State
   const [modal, setModal] = useState(false)
+  const [web3Modal, setWeb3Modal] = useState(false)
 
   const resetDice = () => {
     setDice1Value('?')
@@ -161,6 +163,10 @@ function App() {
     setModal(!modal)
   }
 
+  const toggleWeb3Modal = () => {
+    setWeb3Modal(!web3Modal)
+  }
+
   useEffect(() => {
     if(!numberArr.length){
       winGame()
@@ -171,7 +177,7 @@ function App() {
     <div className={`appContainer ${gameWon ? 'winBG' : ''} ${gameLost ? 'loseBG' : ''}`}>
       <div className={'subContainer'}>
         {gameWon ? <Confetti className={'confetti'}/> : ''}
-        <h1>Jackpot <FiHelpCircle className={'helpIcon'} onClick={toggleModal}/></h1>
+        <h1><FaEthereum className={'helpIcon'} onClick={toggleWeb3Modal}/> Jackpot <FiHelpCircle className={'helpIcon'} onClick={toggleModal}/></h1>
         <div className={'diceContainer'}>
           {renderDice(dice1Value)}
           {renderDice(dice2Value)}
@@ -267,6 +273,31 @@ function App() {
                 <h3>How You Lose</h3>
                 <p>
                     You lose the game when you roll the dice and you are unable to knock down any numbers.
+                </p>
+                <h3>How You Win</h3>
+                <p>
+                    The game is won when you knock down all of the numbers successfully.
+                    And I can say from personal experience... It is truly glorious!
+                </p>
+            </div>
+        </div>)}
+        {web3Modal &&
+        (<div className={'rulesModalContainer'}>
+            <div className={'overlay'} onClick={toggleWeb3Modal}></div>
+            <div className={'rulesModal'}>
+                <AiFillCloseCircle
+                className={'exitModal'}
+                onClick={toggleWeb3Modal}
+                />
+                <p></p>
+                <h3>Web3 Jackpot</h3>
+                <p>
+                    Some writing I'll have to eventually write.
+                    About how the web3 mode lets you mint a cool NFT etc
+                </p>
+                <h3>View your Proof of Persistence</h3>
+                <p>
+                    probably say some things about opensea and give a link to the collection
                 </p>
                 <h3>How You Win</h3>
                 <p>
