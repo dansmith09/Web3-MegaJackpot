@@ -418,17 +418,17 @@ function App() {
                     <h3>How to turn on Web3 Mode</h3>
                     <p>Click the 'Connect Wallet' button below to enable Web3 mode</p>
                   </>}
-                <h3>Web 3 Mode {web3Mode ? 'On' : 'Off'}</h3>
-                <label className="switch">
-                  <input checked={web3Mode} type="checkbox"></input>
-                  <span className="slider round"></span>
-                </label>
-                {!walletConnected && <button onClick={connectWallet} className={'walletConnectButton'}><FaEthereum className={'buttonIcons'}/>Connect Wallet</button>}
                 {walletConnected &&
                 <>
                 <h3>{'Wallet Connected:'}</h3>
                 <p className='walletAddress'>{connectedAddress}</p>
                 </>}
+                {!walletConnected && <button onClick={connectWallet} className={'walletConnectButton'}><FaEthereum className={'buttonIcons'}/>Connect Wallet</button>}
+                <h3>Web 3 Mode {web3Mode ? 'On' : 'Off'}</h3>
+                <label className="switch">
+                  <input checked={web3Mode} type="checkbox"></input>
+                  <span className="slider round"></span>
+                </label>
             </div>
         </div>)}
       </div>
