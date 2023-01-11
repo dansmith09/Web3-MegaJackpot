@@ -212,7 +212,7 @@ function App() {
     const formattedArr = [
       Arr[0],Arr[1],Arr[2],Arr[3],Arr[4], // First 5 digits
       '.','.','.',
-      Arr[Arr.length-1], Arr[Arr.length-2], Arr[Arr.length-3], Arr[Arr.length-4] // Last 4
+      Arr[Arr.length-4], Arr[Arr.length-3], Arr[Arr.length-2], Arr[Arr.length-1] // Last 4
     ]
     setConnectedAddress(formattedArr.join(''))
   }
@@ -265,7 +265,7 @@ function App() {
       // wait for the transaction to get mined
       await tx.wait();
       setLoading(false);
-      window.alert("You successfully minted a Proof of Persistence!");
+      alert("You successfully minted a Proof of Persistence!");
     } catch (err) {
       console.error(err);
     }
@@ -420,7 +420,7 @@ function App() {
                   </>}
                 {walletConnected &&
                 <>
-                <h3>{'Wallet Connected:'}</h3>
+                <h3>Wallet Connected:</h3>
                 <p className='walletAddress'>{connectedAddress}</p>
                 </>}
                 {!walletConnected && <button onClick={connectWallet} className={'walletConnectButton'}><FaEthereum className={'buttonIcons'}/>Connect Wallet</button>}
