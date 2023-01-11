@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Web3-MegaJackpot
 
-## Getting Started
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+---
+
+## Project Description
+
+This project is a web 3 version of [one of my previous projects](https://github.com/dansmith09/Mega-Jackpot).
+
+
+The dApp allows users to connect their Metamask wallets and mint an NFT upon completion of the web game.
+
+## Table of Contents
+
+- [Installation](#installation)
+
+- [Usage](#usage)
+
+- [License](#license)
+
+- [Demo](#demo)
+
+- [Questions](#questions)
+
+---
+
+## Installation
+
+To use the application, please navigate to the following webpage:
+
+```
+https://web3-mega-jackpot.vercel.app/
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Usage
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+Navigate to the above URL and make sure you have Metamask installed and switched to Goerli Testnet
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## License
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+This project's type license is MIT. You can find out more about this license [here](https://opensource.org/licenses/MIT).
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Demo
 
-## Learn More
+Click the Ethereum logo to activate web 3 mode. Once your wallet is connected the web 3 toggle will be on and the Ethereum logo will be purple to let you know you're connected.
 
-To learn more about Next.js, take a look at the following resources:
+If and when you manage to defeat the game you will be prompted to mint a 'Proof of Persistence' NFT.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+[![Demo](./public/web3JackpotConnect.gif)](https://web3-mega-jackpot.vercel.app/ "Click here to try for yourself!")
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+After the transaction is complete head to the goerli test net opensea to see your new ERC721!
 
-## Deploy on Vercel
+[![Demo](./public/OpenseaNFT.gif)](https://web3-mega-jackpot.vercel.app/ "Click here to try for yourself!")
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Questions
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+You can find more of my work at [dansmith09](https://github.com/dansmith09)
+
+---
+
+[![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label)](https://github.com/dansmith09)
+---
+
